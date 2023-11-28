@@ -1,10 +1,10 @@
-package com.brong90s.ecommerce.entity;
+package com.brong90s.ecommerce.entity.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import static com.brong90s.ecommerce.entity.Permission.*;
+import static com.brong90s.ecommerce.entity.enums.Permission.*;
 
 import java.util.List;
 import java.util.Set;

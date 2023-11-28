@@ -1,4 +1,4 @@
-package com.brong90s.ecommerce.dto;
+package com.brong90s.ecommerce.dto.cart;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+import com.brong90s.ecommerce.dto.user.ResponseUserDto;
 import com.brong90s.ecommerce.entity.CartItem;
 
 @Data
@@ -15,6 +16,6 @@ import com.brong90s.ecommerce.entity.CartItem;
 @NoArgsConstructor
 public class CartResponse {
     private String id;
-    private LoggedUserResponse user;
+    private ResponseUserDto user;
     private List<CartItem> cartItems;
 }

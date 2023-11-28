@@ -4,12 +4,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import com.brong90s.ecommerce.dto.CartResponse;
-import com.brong90s.ecommerce.dto.OrderResponse;
+import com.brong90s.ecommerce.dto.cart.CartResponse;
+import com.brong90s.ecommerce.dto.order.OrderResponse;
 import com.brong90s.ecommerce.entity.CartItem;
 import com.brong90s.ecommerce.entity.Order;
 import com.brong90s.ecommerce.entity.Product;
-import com.brong90s.ecommerce.service.impl.CustomerServiceImpl;
+import com.brong90s.ecommerce.service.CustomerService;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/api/v1/customer")
 @RequiredArgsConstructor
 public class CustomerController {
-    private final CustomerServiceImpl customerService;
+    private final CustomerService customerService;
 
     @GetMapping("/")
     public List<Product> fetchAllProducts() {

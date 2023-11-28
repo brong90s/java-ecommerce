@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.brong90s.ecommerce.entity.enums.TokenType;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

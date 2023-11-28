@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.brong90s.ecommerce.dto.ResponseDataDto;
 import com.brong90s.ecommerce.dto.ResponseMessageDto;
-import com.brong90s.ecommerce.dto.SignInDto;
+import com.brong90s.ecommerce.dto.user.SignInDto;
 import com.brong90s.ecommerce.dto.user.SignUpDto;
 import com.brong90s.ecommerce.service.AuthService;
 import com.brong90s.ecommerce.service.LogoutService;

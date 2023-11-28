@@ -7,11 +7,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.brong90s.ecommerce.entity.User;
 import com.brong90s.ecommerce.repository.UserRepository;
-import com.brong90s.ecommerce.service.impl.JwtServiceImpl;
+import com.brong90s.ecommerce.security.jwt.JwtUtils;
 
 @RequiredArgsConstructor
 public class Util {
-    public static User getUserByToken(HttpServletRequest request, JwtServiceImpl jwtService,
+    public static User getUserByToken(HttpServletRequest request, JwtUtils jwtService,
             UserRepository userRepository) {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String userEmail;

@@ -1,4 +1,4 @@
-package com.brong90s.ecommerce.dto;
+package com.brong90s.ecommerce.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoggedUserResponse {
+public class ResponseUserDto {
     private String id;
     private String firstname;
     private String lastname;

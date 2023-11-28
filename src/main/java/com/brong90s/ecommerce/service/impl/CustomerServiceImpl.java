@@ -4,11 +4,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import com.brong90s.ecommerce.dto.CartResponse;
-import com.brong90s.ecommerce.dto.LoggedUserResponse;
-import com.brong90s.ecommerce.dto.OrderResponse;
+import com.brong90s.ecommerce.dto.cart.CartResponse;
+import com.brong90s.ecommerce.dto.order.OrderResponse;
+import com.brong90s.ecommerce.dto.user.ResponseUserDto;
 import com.brong90s.ecommerce.entity.*;
+import com.brong90s.ecommerce.entity.enums.OrderStatus;
 import com.brong90s.ecommerce.repository.*;
+import com.brong90s.ecommerce.security.jwt.JwtUtils;
+import com.brong90s.ecommerce.service.CustomerService;
 
 import static com.brong90s.ecommerce.util.Util.getUserByToken;
 
@@ -16,13 +19,13 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class CustomerServiceImpl {
+public class CustomerServiceImpl implements CustomerService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
-    private final JwtServiceImpl jwtService;
+    private final JwtUtils jwtUtils;
 
     /*
      * Products functions
@@ -42,10 +45,10 @@ public class CustomerServiceImpl {
     public CartResponse addProductInCart(
             String productId,
             HttpServletRequest request) {
-        User user = getUserByToken(request, jwtService, this.userRepository);
+        User user = getUserByToken(request, jwtUtils, this.userRepository);
         Cart cart = this.cartRepository.findByUserId(user.getId());
         Product product = this.productRepository.findById(productId).orElse(null);
-        LoggedUserResponse userResponse = LoggedUserResponse.builder()
+        ResponseUserDto userResponse = ResponseUserDto.builder()
                 .id(user.getId())
                 .firstname(user.getFirstName())
                 .lastname(user.getLastName())
@@ -154,14 +157,14 @@ public class CustomerServiceImpl {
     // include filters for pending, fulfilled and rejected orders
     public List<Order> fetchAllOrdersByUserId(
             HttpServletRequest request) {
-        User user = getUserByToken(request, jwtService, this.userRepository);
+        User user = getUserByToken(request, jwtUtils, this.userRepository);
         Cart cart = this.cartRepository.findByUserId(user.getId());
         return this.orderRepository.findAllByCartId(cart.getId());
     }
 
     public OrderResponse createOrder(HttpServletRequest request) {
         long total = 0;
-        User user = getUserByToken(request, jwtService, this.userRepository);
+        User user = getUserByToken(request, jwtUtils, this.userRepository);
         Cart cart = this.cartRepository.findByUserId(user.getId());
         Calendar calendar = Calendar.getInstance();
 
@@ -185,7 +188,7 @@ public class CustomerServiceImpl {
         CartResponse cartResponse = CartResponse.builder()
                 .id(savedOrder.getCart().getId())
                 .user(
-                        LoggedUserResponse.builder()
+                        ResponseUserDto.builder()
                                 .id(savedOrder.getCart().getUser().getId())
                                 .firstname(savedOrder.getCart().getUser().getFirstName())
                                 .lastname(savedOrder.getCart().getUser().getLastName())
@@ -208,10 +211,10 @@ public class CustomerServiceImpl {
     }
 
     public CartResponse fetchCartByUserId(HttpServletRequest request) {
-        User user = getUserByToken(request, jwtService, this.userRepository);
+        User user = getUserByToken(request, jwtUtils, this.userRepository);
         Cart cart = this.cartRepository.findByUserId(user.getId());
 
-        LoggedUserResponse userResponse = LoggedUserResponse.builder()
+        ResponseUserDto userResponse = ResponseUserDto.builder()
                 .id(user.getId())
                 .firstname(user.getFirstName())
                 .lastname(user.getLastName())

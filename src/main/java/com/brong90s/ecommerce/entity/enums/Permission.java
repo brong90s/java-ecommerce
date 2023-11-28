@@ -1,4 +1,4 @@
-package com.brong90s.ecommerce.entity;
+package com.brong90s.ecommerce.entity.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

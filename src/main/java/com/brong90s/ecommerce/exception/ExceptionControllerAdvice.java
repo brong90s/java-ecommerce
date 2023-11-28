@@ -1,4 +1,4 @@
-package com.brong90s.ecommerce.exceptions;
+package com.brong90s.ecommerce.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;

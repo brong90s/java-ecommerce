@@ -1,4 +1,4 @@
-package com.brong90s.ecommerce.dto;
+package com.brong90s.ecommerce.dto.cart;
 
 import com.brong90s.ecommerce.entity.Product;
 

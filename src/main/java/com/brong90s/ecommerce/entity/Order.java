@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.brong90s.ecommerce.entity.enums.OrderStatus;
+
 import java.util.Date;
 
 @Data

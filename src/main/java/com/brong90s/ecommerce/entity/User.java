@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.brong90s.ecommerce.entity.enums.Role;
+
 import java.util.Collection;
 
 @Data

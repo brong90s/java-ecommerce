@@ -5,12 +5,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.brong90s.ecommerce.dto.CartResponse;
-import com.brong90s.ecommerce.dto.LoggedUserResponse;
-import com.brong90s.ecommerce.dto.OrderResponse;
-import com.brong90s.ecommerce.dto.ProductRequest;
+import com.brong90s.ecommerce.dto.cart.CartResponse;
+import com.brong90s.ecommerce.dto.order.OrderResponse;
+import com.brong90s.ecommerce.dto.product.ProductRequest;
+import com.brong90s.ecommerce.dto.user.ResponseUserDto;
 import com.brong90s.ecommerce.entity.*;
+import com.brong90s.ecommerce.entity.enums.OrderStatus;
 import com.brong90s.ecommerce.repository.*;
+import com.brong90s.ecommerce.service.ShopkeeperService;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +25,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ShopkeeperServiceImpl {
+public class ShopkeeperServiceImpl implements ShopkeeperService {
     private final ImageRepository imageRepository;
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
@@ -160,7 +162,7 @@ public class ShopkeeperServiceImpl {
         return this.orderRepository.findAll();
     }
 
-    public Order fetchOderById(String orderId) {
+    public Order fetchOrderById(String orderId) {
         return this.orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Could not find order"));
     }
@@ -177,7 +179,7 @@ public class ShopkeeperServiceImpl {
         order.setOrderStatus(orderStatus);
         Order savedOrder = this.orderRepository.save(order);
 
-        LoggedUserResponse user = LoggedUserResponse.builder()
+        ResponseUserDto user = ResponseUserDto.builder()
                 .id(savedOrder.getCart().getUser().getId())
                 .firstname(savedOrder.getCart().getUser().getFirstName())
                 .lastname(savedOrder.getCart().getUser().getLastName())

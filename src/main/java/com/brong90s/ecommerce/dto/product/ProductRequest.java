@@ -1,4 +1,4 @@
-package com.brong90s.ecommerce.dto;
+package com.brong90s.ecommerce.dto.product;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

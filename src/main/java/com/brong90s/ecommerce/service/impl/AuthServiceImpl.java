@@ -1,18 +1,19 @@
 package com.brong90s.ecommerce.service.impl;
 
-import com.brong90s.ecommerce.dto.LoggedUserResponse;
 import com.brong90s.ecommerce.dto.ResponseDataDto;
 import com.brong90s.ecommerce.dto.ResponseMessageDto;
-import com.brong90s.ecommerce.dto.SignInDto;
 import com.brong90s.ecommerce.dto.user.ResponseTokenDto;
+import com.brong90s.ecommerce.dto.user.ResponseUserDto;
+import com.brong90s.ecommerce.dto.user.SignInDto;
 import com.brong90s.ecommerce.dto.user.SignUpDto;
-import com.brong90s.ecommerce.entity.Role;
 import com.brong90s.ecommerce.entity.Token;
-import com.brong90s.ecommerce.entity.TokenType;
 import com.brong90s.ecommerce.entity.User;
-import com.brong90s.ecommerce.exceptions.CustomException;
+import com.brong90s.ecommerce.entity.enums.Role;
+import com.brong90s.ecommerce.entity.enums.TokenType;
+import com.brong90s.ecommerce.exception.CustomException;
 import com.brong90s.ecommerce.repository.TokenRepository;
 import com.brong90s.ecommerce.repository.UserRepository;
+import com.brong90s.ecommerce.security.jwt.JwtUtils;
 import com.brong90s.ecommerce.service.AuthService;
 
 import io.jsonwebtoken.security.SignatureException;
@@ -38,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
         private final UserRepository userRepository;
         private final TokenRepository tokenRepository;
         private final PasswordEncoder passwordEncoder;
-        private final JwtServiceImpl jwtService;
+        private final JwtUtils jwtUtils;
 
         private void saveUserToken(User user, String jwtToken, TokenType type) {
                 var token = Token
@@ -52,10 +53,10 @@ public class AuthServiceImpl implements AuthService {
                 tokenRepository.save(token);
         }
 
-        public LoggedUserResponse fetchLoggedInUserByToken(
+        public ResponseUserDto fetchLoggedInUserByToken(
                         HttpServletRequest request) {
-                User user = getUserByToken(request, jwtService, this.userRepository);
-                return LoggedUserResponse.builder()
+                User user = getUserByToken(request, jwtUtils, this.userRepository);
+                return ResponseUserDto.builder()
                                 .id(user.getId())
                                 .firstname(user.getFirstName())
                                 .lastname(user.getLastName())
@@ -91,11 +92,12 @@ public class AuthServiceImpl implements AuthService {
                                 .email(signUpDto.getEmail())
                                 .password(passwordEncoder.encode(signUpDto.getPassword()))
                                 .role(Role.CUSTOMER)
+                                // .role(Role.SHOPKEEPER)
                                 .build();
 
                 User savedUser = userRepository.save(user);
-                String jwtToken = jwtService.generateToken(savedUser);
-                String refreshToken = jwtService.generateRefreshToken(savedUser);
+                String jwtToken = jwtUtils.generateToken(savedUser);
+                String refreshToken = jwtUtils.generateRefreshToken(savedUser);
                 saveUserToken(savedUser, jwtToken, TokenType.ACCESS);
                 saveUserToken(savedUser, refreshToken, TokenType.REFRESH);
 
@@ -103,7 +105,8 @@ public class AuthServiceImpl implements AuthService {
                                 savedUser.getEmail(), savedUser.getPassword());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                ResponseMessageDto responseDto = new ResponseMessageDto(HttpStatus.OK.value(), "User created successefully");
+                ResponseMessageDto responseDto = new ResponseMessageDto(HttpStatus.OK.value(),
+                                "User created successefully");
                 return responseDto;
         }
 
@@ -120,8 +123,8 @@ public class AuthServiceImpl implements AuthService {
                         SecurityContextHolder.getContext().setAuthentication(authentication);
 
                         revokeAllUserTokens(user);
-                        String jwtToken = jwtService.generateToken(user);
-                        String refreshToken = jwtService.generateRefreshToken(user);
+                        String jwtToken = jwtUtils.generateToken(user);
+                        String refreshToken = jwtUtils.generateRefreshToken(user);
                         saveUserToken(user, jwtToken, TokenType.ACCESS);
                         saveUserToken(user, refreshToken, TokenType.REFRESH);
 
@@ -147,7 +150,7 @@ public class AuthServiceImpl implements AuthService {
                 }
 
                 refreshToken = authHeader.split(" ")[1].trim();
-                userEmail = jwtService.extractUsername(refreshToken);
+                userEmail = jwtUtils.extractUsername(refreshToken);
 
                 if (userEmail != null) {
                         User user = this.userRepository.findByEmail(userEmail)
@@ -158,8 +161,8 @@ public class AuthServiceImpl implements AuthService {
                                                         && token.getTokenType().equals(TokenType.REFRESH))
                                         .orElse(false);
 
-                        if (jwtService.isTokenValid(refreshToken, user) && isTokenValid) {
-                                String accessToken = jwtService.generateToken(user);
+                        if (jwtUtils.isTokenValid(refreshToken, user) && isTokenValid) {
+                                String accessToken = jwtUtils.generateToken(user);
                                 revokeAllUserTokens(user);
                                 saveUserToken(user, accessToken, TokenType.ACCESS);
                                 saveUserToken(user, refreshToken, TokenType.REFRESH);

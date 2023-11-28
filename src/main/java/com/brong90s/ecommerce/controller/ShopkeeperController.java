@@ -1,16 +1,18 @@
 package com.brong90s.ecommerce.controller;
 
-import com.brong90s.ecommerce.dto.OrderResponse;
-import com.brong90s.ecommerce.dto.ProductRequest;
+import com.brong90s.ecommerce.dto.order.OrderResponse;
+import com.brong90s.ecommerce.dto.product.ProductRequest;
 import com.brong90s.ecommerce.entity.Category;
 import com.brong90s.ecommerce.entity.Order;
-import com.brong90s.ecommerce.entity.OrderStatus;
 import com.brong90s.ecommerce.entity.Product;
+import com.brong90s.ecommerce.entity.enums.OrderStatus;
 import com.brong90s.ecommerce.service.impl.ShopkeeperServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.net.URI;
@@ -44,6 +46,8 @@ public class ShopkeeperController {
 
     @GetMapping("/categories")
     public List<Category> fetchAllCategories() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("Authenticated User: " + authentication.getName());
         return this.shopkeeperService.fetchAllCategories();
     }
 
@@ -93,7 +97,7 @@ public class ShopkeeperController {
 
     @GetMapping("/oder/{orderId}")
     public Order fetchOderById(@PathVariable String orderId) {
-        return this.shopkeeperService.fetchOderById(orderId);
+        return this.shopkeeperService.fetchOrderById(orderId);
     }
 
     @PostMapping("/order/process/{orderId}")

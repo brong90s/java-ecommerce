@@ -9,11 +9,12 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
 
 import com.brong90s.ecommerce.entity.Token;
-import com.brong90s.ecommerce.entity.TokenType;
 import com.brong90s.ecommerce.entity.User;
-import com.brong90s.ecommerce.exceptions.CustomException;
+import com.brong90s.ecommerce.entity.enums.TokenType;
+import com.brong90s.ecommerce.exception.CustomException;
 import com.brong90s.ecommerce.repository.TokenRepository;
 import com.brong90s.ecommerce.repository.UserRepository;
+import com.brong90s.ecommerce.security.jwt.JwtUtils;
 import com.brong90s.ecommerce.service.LogoutService;
 
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LogoutServiceImpl implements LogoutService, LogoutHandler {
     private final TokenRepository tokenRepository;
-    private final JwtServiceImpl jwtService;
+    private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
 
     @Override
@@ -42,7 +43,7 @@ public class LogoutServiceImpl implements LogoutService, LogoutHandler {
                 .orElse(false);
 
         if (isTokenValid) {
-            var userEmail = jwtService.extractUsername(jwt);
+            var userEmail = jwtUtils.extractUsername(jwt);
             User user = userRepository.findByEmail(userEmail)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
